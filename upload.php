@@ -103,7 +103,7 @@ if(isset($_POST['btn-upload'])) {
                 <h2>Elenco File</h2>
                 <div class="list-group">
                     <?php 
-                        $files = scandir("C:/xampp/htdocs/vs_ed2/upload/");
+                        $files = scandir("C:/xampp/htdocs/f4_vs02/upload/");
 
                         for($i=2;$i<count($files);$i++) {
                     ?>
