@@ -30,7 +30,7 @@ $countOperatori = $row['Totale'];
                     </div>
                 </div>
             </div>
-            <a href="/vs_ed2/clienti.php">
+            <a href="/f4_vs02/clienti.php">
                 <div class="panel-footer">
                     <span class="pull-left">View Details</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -52,7 +52,7 @@ $countOperatori = $row['Totale'];
                     </div>
                 </div>
             </div>
-            <a href="/vs_ed2/operatori.php">
+            <a href="/f4_vs02/operatori.php">
                 <div class="panel-footer">
                     <span class="pull-left">View Details</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
