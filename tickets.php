@@ -8,14 +8,14 @@ $sql_query = "SELECT * FROM vTickets";
 if(isset($_GET['statoId'])) {
   $statoId = $_GET['statoId'];
 
-  $sql_filter .= " WHERE StatoId=$statoId";
+  $sql_filter = " WHERE StatoId=$statoId";
 }
 
 if(isset($_GET['search'])) {
   if(isset($sql_filter)) {
     $sql_filter .= " AND Cliente LIKE '%" . $_GET['search'] .  "%'";
   } else {
-    $sql_filter .= " WHERE Cliente LIKE '%" . $_GET['search'] .  "%'";
+    $sql_filter = " WHERE Cliente LIKE '%" . $_GET['search'] .  "%'";
   }
   
 }
@@ -67,6 +67,12 @@ $result = $connection->query($sql_query);
 
                 <div class="pull-right col-md-4">
                   <form action="#" method="GET">
+                  
+                    <?php if(isset($statoId)) {  ?>
+                        <input type="hidden" name="statoId" 
+                                value="<?php echo $statoId; ?>" />
+                    <?php }  ?>
+
                     <div class="input-group">
                       <input type="text" class="form-control" name="search" placeholder="Search for...">
                       <span class="input-group-btn">
