@@ -5,10 +5,30 @@ include_once('inc/dbconfig.php');
 global $connection;
 $sql_query = "SELECT * FROM vTickets";
 
-if(isset($_GET['search'])) {
-  $sql_query .= " WHERE Cliente LIKE '%" . $_GET['search'] .  "%'";
+if(isset($_GET['statoId'])) {
+  $statoId = $_GET['statoId'];
+
+  $sql_filter .= " WHERE StatoId=$statoId";
 }
-$sql_query .= " ORDER BY Data";
+
+if(isset($_GET['search'])) {
+  if(isset($sql_filter)) {
+    $sql_filter .= " AND Cliente LIKE '%" . $_GET['search'] .  "%'";
+  } else {
+    $sql_filter .= " WHERE Cliente LIKE '%" . $_GET['search'] .  "%'";
+  }
+  
+}
+
+if(isset($sql_filter)) {
+    $sql_query .= $sql_filter . " ORDER BY Data";
+} else {
+    $sql_query .= " ORDER BY Data";
+}
+
+
+
+
 
 $result = $connection->query($sql_query);
 ?>

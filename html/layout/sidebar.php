@@ -25,7 +25,7 @@
                 <a href="operatori.php"><i class="fa fa-edit fa-fw"></i> Operatori</a>
             </li>
             <li>
-                <a href="tickets.php"><i class="fa fa-edit fa-fw"></i> Ticket Aperti</a>
+                <a href="tickets.php?statoId=1"><i class="fa fa-edit fa-fw"></i> Ticket Aperti</a>
             </li>
             <li>
                 <a href="tickets.php"><i class="fa fa-edit fa-fw"></i> Ticket</a>
