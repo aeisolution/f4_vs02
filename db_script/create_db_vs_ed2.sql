@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 21, 2016 at 02:17 PM
+-- Generation Time: Sep 23, 2016 at 09:48 AM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 5.6.19
 
@@ -112,15 +112,18 @@ CREATE TABLE `operatori` (
   `Cognome` varchar(100) NOT NULL,
   `Nome` varchar(100) NOT NULL,
   `ComuneId` int(11) DEFAULT NULL,
-  `RepartoId` int(11) DEFAULT NULL
+  `RepartoId` int(11) DEFAULT NULL,
+  `Username` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `operatori`
 --
 
-INSERT INTO `operatori` (`ID`, `Cognome`, `Nome`, `ComuneId`, `RepartoId`) VALUES
-(1, 'Operatore 2', 'Alessio', 1, 0);
+INSERT INTO `operatori` (`ID`, `Cognome`, `Nome`, `ComuneId`, `RepartoId`, `Username`) VALUES
+(1, 'Maddalena', 'Andrea', 1, 0, 'a.maddalena'),
+(2, 'Mastrolino', 'Gianni', 12, 1, 'operatore1'),
+(3, 'Lonanno', 'Giuseppe', 16, 2, 'operatore2');
 
 -- --------------------------------------------------------
 
@@ -171,6 +174,14 @@ CREATE TABLE `reparti` (
   `Nome` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `reparti`
+--
+
+INSERT INTO `reparti` (`ID`, `Nome`) VALUES
+(1, 'Staff'),
+(2, 'Assistenza Tecnica');
+
 -- --------------------------------------------------------
 
 --
@@ -182,6 +193,17 @@ CREATE TABLE `stati` (
   `Nome` varchar(50) NOT NULL,
   `Colore` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `stati`
+--
+
+INSERT INTO `stati` (`ID`, `Nome`, `Colore`) VALUES
+(1, 'Aperto', ''),
+(2, 'Chiuso', ''),
+(3, 'Sospeso', ''),
+(4, 'Lavorazione', ''),
+(5, 'Annullato', '');
 
 -- --------------------------------------------------------
 
@@ -198,18 +220,38 @@ CREATE TABLE `tickets` (
   `CategoriaId` int(11) DEFAULT NULL,
   `StatoId` int(11) DEFAULT NULL,
   `SubCategoriaId` int(11) NOT NULL,
-  `Owner` varchar(200) NOT NULL
+  `Owner` varchar(200) NOT NULL,
+  `OperatoreId` int(11) NOT NULL,
+  `RepartoId` int(11) NOT NULL,
+  `DataLast` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tickets`
 --
 
-INSERT INTO `tickets` (`ID`, `ClienteId`, `Data`, `Oggetto`, `Descrizione`, `CategoriaId`, `StatoId`, `SubCategoriaId`, `Owner`) VALUES
-(1, 2, '2016-09-15 16:11:10', 'Primo ticket', 'descrizione del disservizio', 0, 0, 0, 'a.maddalena'),
-(2, 4, '2016-09-15 16:34:28', 'Secondo ticket', 'descrizione del problema', 4, 0, 0, 'a.maddalena'),
-(3, 4, '2016-09-15 16:54:09', 'Nuovo ticket', '', 3, 0, 0, 'a.maddalena'),
-(4, 2147483647, '2016-09-15 17:03:40', 'prova', '', 0, 0, 0, 'a.maddalena');
+INSERT INTO `tickets` (`ID`, `ClienteId`, `Data`, `Oggetto`, `Descrizione`, `CategoriaId`, `StatoId`, `SubCategoriaId`, `Owner`, `OperatoreId`, `RepartoId`, `DataLast`) VALUES
+(1, 2, '2016-09-15 16:11:10', 'Primo ticket', 'descrizione del disservizio', 0, 0, 0, 'a.maddalena', 0, 0, '0000-00-00 00:00:00'),
+(2, 4, '2016-09-15 16:34:28', 'Secondo ticket', 'descrizione del problema', 4, 0, 0, 'a.maddalena', 0, 0, '0000-00-00 00:00:00'),
+(3, 4, '2016-09-15 16:54:09', 'Nuovo ticket', '', 3, 0, 0, 'a.maddalena', 0, 0, '0000-00-00 00:00:00'),
+(4, 2147483647, '2016-09-15 17:03:40', 'prova', '', 0, 0, 0, 'a.maddalena', 0, 0, '0000-00-00 00:00:00'),
+(5, 2, '2016-09-21 15:28:00', 'Firma Contratto', 'dati non coerenti sul contratto', 4, 1, 0, 'a.maddalena', 0, 0, '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tickets_work`
+--
+
+CREATE TABLE `tickets_work` (
+  `ID` int(11) NOT NULL,
+  `TicketId` int(11) NOT NULL,
+  `StatoId` int(11) NOT NULL,
+  `OperatoreId` int(11) NOT NULL,
+  `RepartoId` int(11) NOT NULL,
+  `Data` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Note` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -228,7 +270,9 @@ CREATE TABLE `utenti` (
 --
 
 INSERT INTO `utenti` (`id`, `username`, `password`) VALUES
-(1, 'a.maddalena', 'andrea');
+(1, 'a.maddalena', 'andrea'),
+(2, 'operatore1', 'operatore1'),
+(3, 'operatore2', 'operatore2');
 
 -- --------------------------------------------------------
 
@@ -274,9 +318,13 @@ CREATE TABLE `vtickets` (
 ,`Descrizione` text
 ,`CategoriaId` int(11)
 ,`StatoId` int(11)
+,`RepartoId` int(11)
+,`OperatoreId` int(11)
 ,`Owner` varchar(200)
 ,`Categoria` varchar(100)
 ,`Stato` varchar(50)
+,`Reparto` varchar(100)
+,`Operatore` varchar(201)
 ,`Cliente` varchar(201)
 );
 
@@ -305,7 +353,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `vtickets`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vtickets`  AS  select `tickets`.`ID` AS `ID`,`tickets`.`ClienteId` AS `ClienteId`,`tickets`.`Data` AS `Data`,`tickets`.`Oggetto` AS `Oggetto`,`tickets`.`Descrizione` AS `Descrizione`,`tickets`.`CategoriaId` AS `CategoriaId`,`tickets`.`StatoId` AS `StatoId`,`tickets`.`Owner` AS `Owner`,`categorie`.`Nome` AS `Categoria`,`stati`.`Nome` AS `Stato`,concat(`clienti`.`Cognome`,' ',`clienti`.`Nome`) AS `Cliente` from (((`tickets` left join `categorie` on((`tickets`.`CategoriaId` = `categorie`.`ID`))) left join `stati` on((`tickets`.`StatoId` = `stati`.`ID`))) left join `clienti` on((`tickets`.`ClienteId` = `clienti`.`ID`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vtickets`  AS  select `tickets`.`ID` AS `ID`,`tickets`.`ClienteId` AS `ClienteId`,`tickets`.`Data` AS `Data`,`tickets`.`Oggetto` AS `Oggetto`,`tickets`.`Descrizione` AS `Descrizione`,`tickets`.`CategoriaId` AS `CategoriaId`,`tickets`.`StatoId` AS `StatoId`,`tickets`.`RepartoId` AS `RepartoId`,`tickets`.`OperatoreId` AS `OperatoreId`,`tickets`.`Owner` AS `Owner`,`categorie`.`Nome` AS `Categoria`,`stati`.`Nome` AS `Stato`,`reparti`.`Nome` AS `Reparto`,concat(`operatori`.`Cognome`,' ',`operatori`.`Nome`) AS `Operatore`,concat(`clienti`.`Cognome`,' ',`clienti`.`Nome`) AS `Cliente` from (((((`tickets` left join `categorie` on((`tickets`.`CategoriaId` = `categorie`.`ID`))) left join `stati` on((`tickets`.`StatoId` = `stati`.`ID`))) left join `clienti` on((`tickets`.`ClienteId` = `clienti`.`ID`))) left join `reparti` on((`tickets`.`RepartoId` = `reparti`.`ID`))) left join `operatori` on((`tickets`.`OperatoreId` = `operatori`.`ID`))) ;
 
 --
 -- Indexes for dumped tables
@@ -360,6 +408,12 @@ ALTER TABLE `tickets`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `tickets_work`
+--
+ALTER TABLE `tickets_work`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- Indexes for table `utenti`
 --
 ALTER TABLE `utenti`
@@ -389,27 +443,32 @@ ALTER TABLE `comuni`
 -- AUTO_INCREMENT for table `operatori`
 --
 ALTER TABLE `operatori`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `reparti`
 --
 ALTER TABLE `reparti`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `stati`
 --
 ALTER TABLE `stati`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `tickets`
 --
 ALTER TABLE `tickets`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `tickets_work`
+--
+ALTER TABLE `tickets_work`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
