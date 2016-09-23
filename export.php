@@ -1,21 +1,42 @@
 <?php
 include_once('inc/dbconfig.php');
 
+/*
 $list = array (
-    array('aaa', 'bbb', 'ccc', 'dddd'),
-    array('123', '456', '789'),
-    array('"aaa"', '"bbb"')
+    array('ID', 'Cognome', 'Nome', 'Comune'),
+    array('1', 'Maddalena', 'Andrea', 'Siracusa'),
+    array('2', 'Rossi', 'Mario', 'Roma')
 );
+*/
+
 
 $file = 'data/file.csv';
-$fp = fopen($file, 'w');
+$handle = fopen($file, 'w');
 
+/*
 foreach ($list as $fields) {
-    fputcsv($fp, $fields, ';');
+    fputcsv($handle, $fields, ';');
+}
+*/
+
+
+global $connection;
+$sql_query = "SELECT * FROM vClienti";
+$result = $connection->query($sql_query);
+
+
+while($row = $result->fetch_array()) {
+    for($i=0;$i<8;$i++) {
+        $row2[$i] = $row[$i];
+    }
+
+    //print_r($row2);
+
+    fputcsv($handle, $row2, ';');
 }
 
-fclose($fp);
 
+fclose($handle);
 
 // Send File
 if (file_exists($file)) {

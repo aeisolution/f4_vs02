@@ -112,6 +112,7 @@ if(isset($_POST['btn-upload'])) {
                                 class="list-group-item">
                                 <?php echo $i - 1 . ' - ' . $files[$i]; ?>
                             </a>
+                            <a href="/f4_vs02/import.php?import_file=<?php echo $files[$i]; ?>"  class="btn btn-default">import</a>
                     <?php } ?>
                 </div>
             </div>
